@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "main.go",
-            "args": ["path_to_problem", "/Users/shaileshp2/Downloads/Training Problems"]
+            // "args": ["/Users/shaileshp2/Downloads/Training Problems/problem1.txt"]
         }
     ]
 }

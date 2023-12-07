@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -10,20 +12,23 @@ import (
 
 func main() {
 	argsWithoutProg := os.Args[1:]
-	fmt.Println(argsWithoutProg)
-	if len(argsWithoutProg) != 2 || !strings.EqualFold(argsWithoutProg[0], "path_to_problem") {
-		fmt.Println(`Usage: Make sure you have Go development environment setup on a MAC machine. You can pick one of two options. 
-			Option1 (MAC) - go run main.go path_to_problem actual_directory_with_file
-			Option 2 (MAC) - go build . &&  ./main path_to_problem actual_directory_with_file
-					e.g. go build . &&  ./main path_to_problem  ~/Downloads/Training\ Problems`)
-		os.Exit(1)
+	var filePath string
+	if len(argsWithoutProg) != 1 {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter Problem File Full Path (No Absolute Path Please)=>")
+		filePath, _ = reader.ReadString('\n')
+		filePath = strings.Split(filePath, "\n")[0]
+	} else {
+		filePath = argsWithoutProg[0]
 	}
 
-	problemPath := argsWithoutProg[1]
-	if files, err := os.ReadDir(problemPath); err != nil {
-		fmt.Println(err.Error())
+	if file, err := os.Open(filePath); err != nil {
+		log.Println(err.Error())
 	} else {
 		loads := models.Loads{}
-		loads.ReadLoadsFromFiles(problemPath, files)
+		if err := loads.ReadLoadsFromFile(file); err != nil {
+			log.Println(err.Error())
+		}
+		defer file.Close()
 	}
 }
